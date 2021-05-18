@@ -7,6 +7,7 @@ interface Action {
 }
 
 type Reducer = (state: State, action: Action) => State;
+const INIT_ACTION = "INIT_ACTION";
 
 class IStore {
   private state: State = {};
@@ -17,6 +18,10 @@ class IStore {
   constructor(reducer: Reducer, initState: State) {
     this.state = initState;
     this.reducer = reducer;
+
+    // on constructing, a default init action is dispatched
+    const initAction = { type: INIT_ACTION };
+    this.dispatch(initAction);
   }
 
   // get current state
@@ -61,7 +66,11 @@ class IStore {
 
   // used to replace the reducer passed in constructor
   replaceReducer = (reducer: Reducer) => {
+    if (this.isDispatching)
+      throw new Error("Cannot call store.replaceReducer while dispatching");
+
     this.reducer = reducer;
+    return this.reducer;
   };
 }
 
@@ -73,10 +82,10 @@ const reducer = (state: State, action: Action) => {
 
 const action: Action = {
   type: "CHANGE_NAME",
-  payload: { name: "Huzefa" },
+  payload: { name: "Doe" },
 };
 
-const store = new IStore(reducer, { name: "idrees" });
+const store = new IStore(reducer, { name: "John" });
 console.log(store.getState());
 store.dispatch(action);
 console.log(store.getState());
