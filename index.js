@@ -1,20 +1,41 @@
-const { IStore } = require("./lib/store");
+const { IRedux } = require("./lib/index");
+const { createStore, combineReducers } = IRedux;
 
-const reducer = (state, action) => {
-  return { ...state, ...action.payload };
-};
+function todos(state = [], action) {
+  switch (action.type) {
+    case "ADD_TODO":
+      return state.concat([action.text]);
+    default:
+      return state;
+  }
+}
 
-const action = {
-  type: "CHANGE_NAME",
-  payload: { name: "Doe" },
-};
+function counter(state = 0, action) {
+  switch (action.type) {
+    case "INCREMENT":
+      return state + 1;
+    case "DECREMENT":
+      return state - 1;
+    default:
+      return state;
+  }
+}
+
+// Create root reducer
+const rootReducer = combineReducers({
+  todos,
+  counter,
+});
 
 // Creating a store
-const store = new IStore(reducer, { name: "John" });
+const store = new createStore(rootReducer);
 
 // Get state before dispatch
 console.log(store.getState());
-store.dispatch(action);
+store.dispatch({
+  type: "ADD_TODO",
+  payload: "Use Redux",
+});
 
 // Get state after dispatch
 console.log(store.getState());

@@ -1,22 +1,12 @@
-// Redux API
-type State = {};
-
-interface Action {
-  type: string;
-  payload?: Object;
-}
-
-type Reducer = (state: State, action: Action) => State;
-const INIT_ACTION = "INIT_ACTION";
-
+import { Reducer, Action, State, INIT_ACTION } from "./enum";
 class IStore {
   #state: State = {};
   #listeners: Function[] = [];
   #reducer: Reducer = null;
   #isDispatching = false;
 
-  constructor(reducer: Reducer, initState: State) {
-    this.#state = initState;
+  constructor(reducer: Reducer, initState?: State) {
+    this.#state = initState ?? {};
     this.#reducer = reducer;
 
     // on constructing, a default init action is dispatched
