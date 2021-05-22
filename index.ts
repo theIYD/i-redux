@@ -1,5 +1,12 @@
 import { IStore } from "./store";
-import { Reducer, State } from "./enum";
+import {
+  CreateStore,
+  Dispatch,
+  Middleware,
+  MiddlewareAPI,
+  Reducer,
+  State,
+} from "./enum";
 
 interface Reducers {
   [reducer: string]: Reducer;
@@ -23,10 +30,40 @@ const compose = (...funcs: Function[]) => {
   };
 };
 
+const applyMiddlware = (...middlewares: Middleware[]) => {
+  return (createStore: CreateStore) =>
+    (reducer: Reducer, preloadedState: State) => {
+      const store = createStore(reducer, preloadedState);
+
+      let dispatch: Dispatch = () => {
+        throw new Error(
+          "Dispatching while constructing your middleware is not allowed. " +
+            "Other middleware would not be applied to this dispatch."
+        );
+      };
+
+      const middlewareAPI: MiddlewareAPI = {
+        getState: store.getState,
+        dispatch: (action) => dispatch(action),
+      };
+
+      const middlewareChain = middlewares.map((middleware) =>
+        middleware(middlewareAPI)
+      );
+      dispatch = compose(...middlewareChain)(store.dispatch);
+
+      return {
+        ...store,
+        dispatch,
+      };
+    };
+};
+
 const IRedux = {
   createStore: IStore,
   combineReducers,
   compose,
+  applyMiddlware,
 };
 
 export { IRedux };

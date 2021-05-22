@@ -4,7 +4,7 @@ const { createStore, combineReducers } = IRedux;
 function todos(state = [], action) {
   switch (action.type) {
     case "ADD_TODO":
-      return state.concat([action.text]);
+      return state.concat([action.payload]);
     default:
       return state;
   }
@@ -19,6 +19,21 @@ function counter(state = 0, action) {
     default:
       return state;
   }
+}
+
+function logger({ getState }) {
+  return (next) => (action) => {
+    console.log("will dispatch", action);
+
+    // Call the next dispatch method in the middleware chain.
+    const returnValue = next(action);
+
+    console.log("state after dispatch", getState());
+
+    // This will likely be the action itself, unless
+    // a middleware further in chain changed it.
+    return returnValue;
+  };
 }
 
 // Create root reducer
