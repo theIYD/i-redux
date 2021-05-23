@@ -6,11 +6,8 @@ import {
   MiddlewareAPI,
   Reducer,
   State,
+  Reducers,
 } from "./enum";
-
-interface Reducers {
-  [reducer: string]: Reducer;
-}
 
 const combineReducers = (reducers: Reducers): Reducer => {
   return function (state, action): State {

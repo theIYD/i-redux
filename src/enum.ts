@@ -5,6 +5,10 @@ export interface Action {
   payload?: Object;
 }
 
+export interface Reducers {
+  [reducer: string]: Reducer;
+}
+
 export interface CreateStore {
   (reducer: Reducer, preloadedState?: State): {
     getState: () => State;

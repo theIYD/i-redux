@@ -1,4 +1,4 @@
-const { createStore, combineReducers } = require("./lib").default;
+const { createStore, combineReducers } = require("../lib").default;
 
 function todos(state = [], action) {
   switch (action.type) {
