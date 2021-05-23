@@ -1,6 +1,7 @@
 const { createStore, combineReducers, applyMiddleware } =
   require("../lib").default;
 
+// Todo Reducer
 function todos(state = [], action) {
   switch (action.type) {
     case "ADD_TODO":
@@ -10,6 +11,7 @@ function todos(state = [], action) {
   }
 }
 
+// Counter reducer
 function counter(state = 0, action) {
   switch (action.type) {
     case "INCREMENT":
