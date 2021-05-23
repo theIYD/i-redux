@@ -1,5 +1,4 @@
-const { IRedux } = require("./lib/index");
-const { createStore, combineReducers } = IRedux;
+const { createStore, combineReducers } = require("./lib").default;
 
 function todos(state = [], action) {
   switch (action.type) {
@@ -43,7 +42,7 @@ const rootReducer = combineReducers({
 });
 
 // Creating a store
-const store = new createStore(rootReducer);
+const store = createStore(rootReducer);
 
 // Get state before dispatch
 console.log(store.getState());

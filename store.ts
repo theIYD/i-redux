@@ -1,67 +1,70 @@
 import { Reducer, Action, State, INIT_ACTION } from "./enum";
-class IStore {
-  state: State = {};
-  listeners: Function[] = [];
-  reducer: Reducer = null;
-  isDispatching = false;
 
-  constructor(reducer: Reducer, initState?: State) {
-    this.state = initState ?? {};
-    this.reducer = reducer;
-
-    // on constructing, a default init action is dispatched
-    const initAction = { type: INIT_ACTION };
-    this.dispatch(initAction);
-  }
+const createStore = (reducer: Reducer, initState?: State) => {
+  let state: State = initState ?? {};
+  const storeReducer: Reducer = reducer;
+  let isDispatching = false;
+  const listeners: Function[] = [];
 
   // get current state
-  getState = () => {
-    if (this.isDispatching)
+  const getState = () => {
+    if (isDispatching)
       throw new Error("Cannot call store.getState while dispatching");
-    return this.state;
+    return state;
   };
 
   // listener is invoked whenever an action is dispatched
-  subscribe = (listener: Function) => {
-    if (this.isDispatching)
+  const subscribe = (listener: Function) => {
+    if (isDispatching)
       throw new Error("Cannot call store.subscribe while dispatching");
 
-    this.listeners.push(listener);
+    listeners.push(listener);
 
     return () => {
-      if (this.isDispatching)
+      if (isDispatching)
         throw new Error("Cannot call store.unsubscribe while dispatching");
 
-      const index = this.listeners.indexOf(listener);
-      this.listeners.splice(index, 1);
+      const index = listeners.indexOf(listener);
+      listeners.splice(index, 1);
     };
   };
 
   // used to trigger store changes i.e actions
-  dispatch = (action: Action) => {
-    if (this.isDispatching)
+  const dispatch = (action: Action) => {
+    if (isDispatching)
       throw new Error("Cannot call store.unsubscribe while dispatching");
 
-    this.isDispatching = true;
+    isDispatching = true;
 
     try {
-      this.state = this.reducer(this.state, action);
-      this.listeners.forEach((listener) => listener());
+      state = storeReducer(state, action);
+      listeners.forEach((listener) => listener());
     } finally {
-      this.isDispatching = false;
+      isDispatching = false;
     }
 
     return action;
   };
 
   // used to replace the reducer passed in constructor
-  replaceReducer = (reducer: Reducer) => {
-    if (this.isDispatching)
+  const replaceReducer = (reducer: Reducer) => {
+    if (isDispatching)
       throw new Error("Cannot call store.replaceReducer while dispatching");
 
-    this.reducer = reducer;
-    return this.reducer;
+    reducer = reducer;
+    return reducer;
   };
-}
 
-export { IStore };
+  // a default init action is dispatched
+  const initAction = { type: INIT_ACTION };
+  dispatch(initAction);
+
+  return {
+    getState,
+    replaceReducer,
+    dispatch,
+    subscribe,
+  };
+};
+
+export default createStore;

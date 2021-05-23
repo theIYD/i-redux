@@ -1,6 +1,3 @@
-import { IStore } from "./store";
-
-// Redux API
 export type State = {};
 
 export interface Action {
@@ -9,7 +6,12 @@ export interface Action {
 }
 
 export interface CreateStore {
-  (reducer: Reducer, preloadedState?: State): IStore;
+  (reducer: Reducer, preloadedState?: State): {
+    getState: () => State;
+    replaceReducer: (reducer: Reducer) => Reducer;
+    dispatch: (action: Action) => Action;
+    subscribe: (listener: Function) => () => void;
+  };
 }
 
 export interface GetState {

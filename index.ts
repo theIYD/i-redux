@@ -1,4 +1,4 @@
-import { IStore } from "./store";
+import createStore from "./store";
 import {
   CreateStore,
   Dispatch,
@@ -60,10 +60,10 @@ const applyMiddlware = (...middlewares: Middleware[]) => {
 };
 
 const IRedux = {
-  createStore: IStore,
+  createStore,
   combineReducers,
   compose,
   applyMiddlware,
 };
 
-export { IRedux };
+export default IRedux;
