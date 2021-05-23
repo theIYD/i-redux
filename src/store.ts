@@ -1,6 +1,6 @@
 import { Reducer, Action, State, INIT_ACTION } from "./enum";
 
-const createStore = (reducer: Reducer, initState?: State) => {
+const createStore = (reducer: Reducer, initState?: State, enhancer?) => {
   let state: State = initState ?? {};
   const storeReducer: Reducer = reducer;
   let isDispatching = false;
@@ -54,6 +54,10 @@ const createStore = (reducer: Reducer, initState?: State) => {
     reducer = reducer;
     return reducer;
   };
+
+  if (!!enhancer) {
+    return enhancer(createStore)(reducer, initState);
+  }
 
   // a default init action is dispatched
   const initAction = { type: INIT_ACTION };

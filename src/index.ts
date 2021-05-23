@@ -27,7 +27,7 @@ const compose = (...funcs: Function[]) => {
   };
 };
 
-const applyMiddlware = (...middlewares: Middleware[]) => {
+const applyMiddleware = (...middlewares: Middleware[]) => {
   return (createStore: CreateStore) =>
     (reducer: Reducer, preloadedState: State) => {
       const store = createStore(reducer, preloadedState);
@@ -60,7 +60,7 @@ const IRedux = {
   createStore,
   combineReducers,
   compose,
-  applyMiddlware,
+  applyMiddleware,
 };
 
 export default IRedux;

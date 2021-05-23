@@ -1,4 +1,5 @@
-const { createStore, combineReducers } = require("../lib").default;
+const { createStore, combineReducers, applyMiddleware } =
+  require("../lib").default;
 
 function todos(state = [], action) {
   switch (action.type) {
@@ -20,6 +21,7 @@ function counter(state = 0, action) {
   }
 }
 
+// Middleware
 function logger({ getState }) {
   return (next) => (action) => {
     console.log("will dispatch", action);
@@ -42,7 +44,7 @@ const rootReducer = combineReducers({
 });
 
 // Creating a store
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, {}, applyMiddleware(logger));
 
 // Get state before dispatch
 console.log(store.getState());
