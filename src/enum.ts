@@ -35,5 +35,9 @@ export interface MiddlewareAPI {
   dispatch: Dispatch;
 }
 
+export interface ActionCreatorObject {
+  [actionCreator: string]: Function;
+}
+
 export type Reducer = (state: State, action: Action) => State;
 export const INIT_ACTION = "INIT_ACTION";

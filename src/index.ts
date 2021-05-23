@@ -7,6 +7,7 @@ import {
   Reducer,
   State,
   Reducers,
+  ActionCreatorObject,
 } from "./enum";
 
 const combineReducers = (reducers: Reducers): Reducer => {
@@ -26,6 +27,12 @@ const compose = (...funcs: Function[]) => {
     return funcs.reduceRight((v, f) => f(v), x);
   };
 };
+
+function bindActionCreator(actionCreator: Function, dispatch: Dispatch) {
+  return function (this: any, ...args: any[]) {
+    return dispatch(actionCreator.apply(this, args));
+  };
+}
 
 const applyMiddleware = (...middlewares: Middleware[]) => {
   return (createStore: CreateStore) =>
@@ -56,11 +63,32 @@ const applyMiddleware = (...middlewares: Middleware[]) => {
     };
 };
 
+const bindActionCreators = (
+  actionCreators: Function | ActionCreatorObject,
+  dispatch: Dispatch
+) => {
+  if (typeof actionCreators === "function") {
+    return bindActionCreator(actionCreators, dispatch);
+  }
+
+  const creators = {};
+  for (let key in actionCreators) {
+    const actionCreator = actionCreators[key];
+
+    if (typeof actionCreator === "function") {
+      creators[key] = bindActionCreator(actionCreator, dispatch);
+    }
+  }
+
+  return creators;
+};
+
 const IRedux = {
   createStore,
   combineReducers,
   compose,
   applyMiddleware,
+  bindActionCreators,
 };
 
 export default IRedux;
