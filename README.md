@@ -8,5 +8,5 @@ A raw, holistic write of [redux](https://github.com/reduxjs/redux). Meant only f
 - [x] compose
 - [x] applyMiddleware
 - [x] combineReducers
-- [ ] bindActionCreators
+- [x] bindActionCreators
 - [ ] error checks
